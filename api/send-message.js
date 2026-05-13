@@ -7,8 +7,6 @@ export default async function handler(req, res) {
     const MAX_CHAT_ID = '-74685431444153'; 
     const { text } = req.body;
 
-    // Согласно ответу поддержки: токен передается в заголовке Authorization БЕЗ Bearer
-    // Передача через URL (?token=) больше не поддерживается
     const url = 'https://platform-api.max.ru/messages';
 
     try {
@@ -16,10 +14,10 @@ export default async function handler(req, res) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': MAX_BOT_TOKEN // Чистый токен без префиксов
+                'Authorization': MAX_BOT_TOKEN // Прямой токен без слова Bearer согласно саппорту
             },
             body: JSON.stringify({
-                chat_id: MAX_CHAT_ID,
+                chat_id: String(MAX_CHAT_ID), // Принудительно передаем как строку
                 text: text
             })
         });
@@ -29,8 +27,11 @@ export default async function handler(req, res) {
         if (response.ok) {
             return res.status(200).json({ success: true });
         } else {
-            // Если сервер вернул ошибку (например, 429), пробрасываем её для диагностики
-            return res.status(response.status).json(result);
+            // Возвращаем детальную ошибку от MAX, чтобы она отобразилась на сайте
+            return res.status(response.status).json({
+                error: result,
+                statusText: result.message || 'Bad Request'
+            });
         }
     } catch (error) {
         return res.status(500).json({ 
