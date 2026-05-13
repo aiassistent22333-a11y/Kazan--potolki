@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const MAX_CHAT_ID = '-74685431444153'; 
     const { text } = req.body;
 
-    // Мы передаем токен прямо в URL через ?token=, чтобы сервер MAX увидел его гарантированно
+    // Согласно документации, токен передается в URL для гарантированной авторизации
     const url = `https://platform-api.max.ru/messages?token=${MAX_BOT_TOKEN}`;
 
     try {
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         if (response.ok) {
             return res.status(200).json({ success: true });
         } else {
-            // Возвращаем код ошибки для диагностики на сайте
+            // Если сервер вернул ошибку (например, 429), пробрасываем её для диагностики
             return res.status(response.status).json(result);
         }
     } catch (error) {
