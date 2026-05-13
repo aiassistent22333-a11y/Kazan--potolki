@@ -9,11 +9,13 @@ export default async function handler(req, res) {
   const { text } = req.body;
 
   try {
-    const response = await fetch('https://platform-api.max.ru/messages', {
+    // Переносим токен в URL, так как сервер MAX выдал ошибку "No access token" при использовании Headers
+    const url = `https://platform-api.max.ru/messages?token=${MAX_BOT_TOKEN}`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MAX_BOT_TOKEN}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         chat_id: MAX_CHAT_ID,
