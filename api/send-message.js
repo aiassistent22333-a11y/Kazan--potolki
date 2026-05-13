@@ -9,8 +9,7 @@ export default async function handler(req, res) {
   const { text } = req.body;
 
   try {
-    // Пробуем передать токен в заголовке "Token" без приставки Bearer
-    // Это часто решает проблему "No access token" в API MAX
+    // Используем заголовок "Token", который позволил нам пройти авторизацию
     const response = await fetch('https://platform-api.max.ru/messages', {
       method: 'POST',
       headers: {
@@ -28,6 +27,7 @@ export default async function handler(req, res) {
     if (response.ok) {
       return res.status(200).json({ success: true });
     } else {
+      // Передаем детали ошибки 429 или других статусов
       return res.status(response.status).json({ 
         success: false, 
         status: response.status,
