@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
     // ВАШИ ДАННЫЕ ИЗ МЕССЕНДЖЕРА MAX
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH'; 
-    const MAX_CHAT_ID = '279092323'; 
+    const MAX_CHAT_ID = '74685431444153'; 
     
     const { text } = req.body;
 
