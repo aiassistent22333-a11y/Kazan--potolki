@@ -366,25 +366,26 @@
 📱 Тел: ${phone}`;
 
             try {
-                // Прямой запрос к нашей серверной функции Vercel
                 const response = await fetch('/api/send-message', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: message })
                 });
 
+                const result = await response.json();
+
                 if (response.ok) {
                     document.getElementById('input-container').classList.add('hidden');
                     document.getElementById('final-desc').innerText = "Заявка успешно принята. Наш специалист свяжется с вами в ближайшее время.";
                     showMsg("Успешно отправлено!");
                 } else {
-                    const err = await response.json();
-                    console.error('API Error:', err);
-                    throw new Error();
+                    const errorDetail = result.error ? JSON.stringify(result.error) : 'Неизвестная ошибка';
+                    showMsg(`Ошибка ${response.status}: ${errorDetail}`, true);
+                    btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
                 }
             } catch (e) {
                 btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
-                showMsg("Ошибка отправки. Попробуйте позже.", true);
+                showMsg(`Ошибка сети: ${e.message}`, true);
             }
         }
     </script>
