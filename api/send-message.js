@@ -7,14 +7,16 @@ export default async function handler(req, res) {
     const MAX_CHAT_ID = '-74685431444153'; 
     const { text } = req.body;
 
-    // Согласно документации, токен передается в URL для гарантированной авторизации
-    const url = `https://platform-api.max.ru/messages?token=${MAX_BOT_TOKEN}`;
+    // Согласно ответу поддержки: токен передается в заголовке Authorization БЕЗ Bearer
+    // Передача через URL (?token=) больше не поддерживается
+    const url = 'https://platform-api.max.ru/messages';
 
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': MAX_BOT_TOKEN // Чистый токен без префиксов
             },
             body: JSON.stringify({
                 chat_id: MAX_CHAT_ID,
