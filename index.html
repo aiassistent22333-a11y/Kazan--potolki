@@ -112,7 +112,6 @@
                 </button>
             </div>
 
-            <!-- Шаг 1: Тип -->
             <div id="step-1" class="step-transition hidden">
                 <h2 class="text-2xl font-semibold mb-8 text-center tracking-wide">Выберите тип полотна</h2>
                 <div id="type-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,7 +157,6 @@
                 </div>
             </div>
 
-            <!-- Шаг 3: Опции -->
             <div id="step-3" class="step-transition hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-center tracking-wide">Дополнительные услуги</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scroll">
@@ -357,27 +355,33 @@
             btn.disabled = true; btn.innerText = "ОТПРАВКА...";
 
             const message = `
-🚀 <b>НОВЫЙ ЛИД: КАЗАНСКИЕ ПОТОЛКИ</b>
+🚀 НОВЫЙ ЛИД: КАЗАНСКИЕ ПОТОЛКИ
 -------------------------
-💎 <b>Тип:</b> ${quizData.type}
-📏 <b>Площадь:</b> ${quizData.area} м²
-📐 <b>Углы:</b> ${quizData.corners}
-✨ <b>Опции:</b> ${quizData.options.join(', ') || 'Нет'}
-💰 <b>Расчет:</b> ${quizData.total} ₽
+💎 Тип: ${quizData.type}
+📏 Площадь: ${quizData.area} м²
+📐 Углы: ${quizData.corners}
+✨ Опции: ${quizData.options.join(', ') || 'Нет'}
+💰 Расчет: ${quizData.total} ₽
 -------------------------
-📱 <b>Тел:</b> ${phone}`;
+📱 Тел: ${phone}`;
 
             try {
+                // Прямой запрос к нашей серверной функции Vercel
                 const response = await fetch('/api/send-message', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: message })
                 });
+
                 if (response.ok) {
                     document.getElementById('input-container').classList.add('hidden');
                     document.getElementById('final-desc').innerText = "Заявка успешно принята. Наш специалист свяжется с вами в ближайшее время.";
                     showMsg("Успешно отправлено!");
-                } else throw new Error();
+                } else {
+                    const err = await response.json();
+                    console.error('API Error:', err);
+                    throw new Error();
+                }
             } catch (e) {
                 btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
                 showMsg("Ошибка отправки. Попробуйте позже.", true);
