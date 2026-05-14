@@ -2,24 +2,23 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
-    
-    // МЫ ПРОБУЕМ ОЧИСТИТЬ ID: в некоторых API префикс -74... лишний
-    // Если -74735565042361 не сработает, попробуем передать его как 74735565042361
     const MAX_CHAT_ID = -74735565042361; 
     
     const { text } = req.body;
 
     try {
+        const payload = {
+            chat_id: MAX_CHAT_ID,
+            text: text
+        };
+
         const response = await fetch('https://platform-api.max.ru/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': MAX_BOT_TOKEN
             },
-            body: JSON.stringify({
-                chat_id: MAX_CHAT_ID, // Передаем как число (без кавычек)
-                text: text
-            })
+            body: JSON.stringify(payload)
         });
 
         const responseText = await response.text();
