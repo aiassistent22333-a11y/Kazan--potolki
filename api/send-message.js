@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     
     // МЫ ПРОБУЕМ ОЧИСТИТЬ ID: в некоторых API префикс -74... лишний
     // Если -74735565042361 не сработает, попробуем передать его как 74735565042361
-    const MAX_CHAT_ID = 74735565042361; 
+    const MAX_CHAT_ID = -74735565042361; 
     
     const { text } = req.body;
 
