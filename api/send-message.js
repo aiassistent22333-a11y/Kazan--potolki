@@ -3,9 +3,8 @@ export default async function handler(req, res) {
 
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
     
-    // МЕНЯЕМ НА ПОЛОЖИТЕЛЬНОЕ ЧИСЛО (без минуса и без кавычек).
-    // Это стандартное требование для многих API, где минус — это просто флаг интерфейса.
-    const MAX_CHAT_ID = 74685431444153; 
+    // Мы берем ID ровно в том виде, в котором его выдал метод /chats (число с минусом)
+    const MAX_CHAT_ID = -74685431444153; 
     const { text } = req.body;
 
     try {
@@ -13,17 +12,19 @@ export default async function handler(req, res) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': MAX_BOT_TOKEN 
+                'Authorization': MAX_BOT_TOKEN // Без Bearer, как просила поддержка
             },
             body: JSON.stringify({
+                // Мы шлем оба варианта написания поля, чтобы исключить ошибку "Unknown recipient"
                 chat_id: MAX_CHAT_ID,
+                chatId: MAX_CHAT_ID, 
                 text: text
             })
         });
 
         const data = await response.json();
 
-        // Возвращаем результат обратно на фронтенд для диагностики
+        // Возвращаем результат для диагностики на фронтенд
         return res.status(response.status).json(data);
         
     } catch (error) {
