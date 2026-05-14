@@ -3,8 +3,9 @@ export default async function handler(req, res) {
 
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
     
-    // Передаем ID строго как СТРОКУ (в кавычках), так как proto.payload часто ругается на формат длинных чисел
-    const MAX_CHAT_ID = "-74685431444153"; 
+    // МЫ УБРАЛИ МИНУС. В API многих систем группы идентифицируются просто по номеру.
+    // Передаем как СТРОКУ, так как это безопаснее для длинных чисел.
+    const MAX_CHAT_ID = "74685431444153"; 
     const { text } = req.body;
 
     try {
