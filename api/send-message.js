@@ -1,16 +1,15 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
+    // ТОКЕН (Остается неизменным)
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
-    // В Каналах ID часто передается без минуса или с префиксом, 
-    // но сначала попробуем точное число из ссылки.
-    const MAX_CHANNEL_ID = "-74685431444153"; 
+    
+    // ВНИМАНИЕ: Сюда впишите ID вашей НОВОЙ ГРУППЫ без кавычек
+    const MAX_CHAT_ID = -74735565042361; 
     
     const { text } = req.body;
 
     try {
-        // Для каналов в некоторых версиях API MAX используется путь /posts или специальный флаг
-        // Пробуем универсальный метод, но с корректным именованием для канала
         const response = await fetch('https://platform-api.max.ru/messages', {
             method: 'POST',
             headers: {
@@ -18,13 +17,8 @@ export default async function handler(req, res) {
                 'Authorization': MAX_BOT_TOKEN
             },
             body: JSON.stringify({
-                // ВНИМАНИЕ: Для каналов часто поле называется channel_id или 
-                // объект recipient должен содержать тип чата.
-                chat_id: MAX_CHANNEL_ID,
-                text: text,
-                // Добавляем флаги, которые могут потребоваться для публикации в канал
-                is_channel: true,
-                broadcast: true
+                chat_id: MAX_CHAT_ID,
+                text: text
             })
         });
 
