@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КАЗАНСКИЕ ПОТОЛКИ | Премиальные решения 2026</title>
-    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1920">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -74,7 +73,7 @@
 
     <header class="w-full max-w-4xl flex flex-col md:flex-row justify-between items-center py-8 mb-4 border-b border-white/5 relative z-10">
         <div>
-            <h1 class="text-xl font-extrabold tracking-[0.2em] neon-text-glow">КАЗАНСКИЕ ПОТОЛКИ</h1>
+            <h1 class="text-xl font-extrabold tracking-[0.2em] neon-text-glow uppercase">КАЗАНСКИЕ ПОТОЛКИ</h1>
             <p class="text-[10px] text-white/40 uppercase tracking-widest">Казань и область (+40км)</p>
         </div>
         <div class="text-right mt-4 md:mt-0">
@@ -112,6 +111,7 @@
                 </button>
             </div>
 
+            <!-- Шаг 1: Тип -->
             <div id="step-1" class="step-transition hidden">
                 <h2 class="text-2xl font-semibold mb-8 text-center tracking-wide">Выберите тип полотна</h2>
                 <div id="type-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -133,96 +133,106 @@
                     </div>
                 </div>
                 <div class="mt-10 flex justify-between">
-                    <button onclick="nextStep(0)" class="text-white/30 hover:text-white transition text-sm tracking-widest">НАЗАД</button>
+                    <button onclick="nextStep(0)" class="text-white/30 hover:text-white transition text-sm tracking-widest uppercase">НАЗАД</button>
                     <button onclick="validateAndNext(2)" class="neon-button px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">ДАЛЕЕ</button>
                 </div>
             </div>
 
+            <!-- Шаг 2: Параметры -->
             <div id="step-2" class="step-transition hidden">
                 <h2 class="text-2xl font-semibold mb-4 text-center tracking-wide">Параметры помещения</h2>
-                <p class="text-center text-white/40 text-xs mb-8">База: 950 ₽/м² (плёнка 450 + монтаж 500)</p>
+                <p class="text-center text-white/40 text-xs mb-8 uppercase tracking-widest">БАЗА: 950 ₽/м² (ПЛЕНКА + МОНТАЖ)</p>
                 <div class="space-y-6 max-w-sm mx-auto">
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Площадь (кв.м.) *</label>
                         <input type="number" id="input-area" placeholder="Например: 25" class="w-full p-4 rounded-xl text-lg font-light text-center">
                     </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Количество углов *</label>
-                        <input type="number" id="input-corners" placeholder="Например: 4" class="w-full p-4 rounded-xl text-lg font-light text-center">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Углы *</label>
+                            <input type="number" id="input-corners" placeholder="От 4" class="w-full p-4 rounded-xl text-lg font-light text-center">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Точки света *</label>
+                            <input type="number" id="input-lights" placeholder="Люстры/споты" class="w-full p-4 rounded-xl text-lg font-light text-center">
+                        </div>
                     </div>
                 </div>
                 <div class="mt-10 flex justify-between">
-                    <button onclick="nextStep(1)" class="text-white/30 hover:text-white transition text-sm tracking-widest">НАЗАД</button>
+                    <button onclick="nextStep(1)" class="text-white/30 hover:text-white transition text-sm tracking-widest uppercase">НАЗАД</button>
                     <button onclick="validateAndNext(3)" class="neon-button px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">ДАЛЕЕ</button>
                 </div>
             </div>
 
+            <!-- Шаг 3: Доп. услуги с индивидуальным расчетом -->
             <div id="step-3" class="step-transition hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-center tracking-wide">Дополнительные услуги</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scroll">
+                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scroll">
+                    <!-- Каждая услуга имеет свои данные для расчета -->
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Световые линии</span>
-                        <input type="checkbox" value="Световые линии" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Световые линии" data-price="7000" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Теневой профиль (EuroKraab)</span>
-                        <input type="checkbox" value="Теневой профиль" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Теневой профиль" data-price="600" data-type="perimeter" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
-                        <span class="text-white/80 text-sm">Установка люстр/точечных светильников</span>
-                        <input type="checkbox" value="Светотехника" class="w-5 h-5 accent-[#00f2fe]">
+                        <span class="text-white/80 text-sm">Установка люстр/светильников</span>
+                        <input type="checkbox" value="Светотехника" data-price="3500" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
-                        <span class="text-white/80 text-sm">Ниши под карнизы (ПК-5) и др.</span>
-                        <input type="checkbox" value="Ниши ПК-5" class="w-5 h-5 accent-[#00f2fe]">
+                        <span class="text-white/80 text-sm">Ниши под карнизы (ПК-5)</span>
+                        <input type="checkbox" value="Ниши ПК-5" data-price="4000" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Скрытые гардины</span>
-                        <input type="checkbox" value="Скрытые гардины" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Скрытые гардины" data-price="3000" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Парящие с подсветкой</span>
-                        <input type="checkbox" value="Парящие" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Парящие" data-price="400" data-type="perimeter" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Трековое освещение</span>
-                        <input type="checkbox" value="Треки" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Треки" data-price="6000" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Слив воды</span>
-                        <input type="checkbox" value="Слив воды" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Слив воды" data-price="2500" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                     <label class="neon-border p-4 rounded-xl cursor-pointer flex items-center justify-between group">
                         <span class="text-white/80 text-sm">Замена полотен</span>
-                        <input type="checkbox" value="Замена полотен" class="w-5 h-5 accent-[#00f2fe]">
+                        <input type="checkbox" value="Замена полотен" data-price="0" data-type="fixed" class="w-5 h-5 accent-[#00f2fe]">
                     </label>
                 </div>
                 <div class="mt-8 flex justify-between">
-                    <button onclick="nextStep(2)" class="text-white/30 hover:text-white transition text-sm tracking-widest">НАЗАД</button>
+                    <button onclick="nextStep(2)" class="text-white/30 hover:text-white transition text-sm tracking-widest uppercase">НАЗАД</button>
                     <button onclick="nextStep(4)" class="neon-button px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">РЕЗУЛЬТАТ</button>
                 </div>
             </div>
 
+            <!-- Шаг 4: Результат -->
             <div id="step-4" class="step-transition hidden text-center">
                 <div id="final-status-icon" class="w-16 h-16 border-2 border-[#00f2fe] rounded-full flex items-center justify-center mx-auto mb-6 neon-text-glow">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
-                <h2 class="text-2xl font-bold mb-2">РАСЧЕТ ГОТОВ!</h2>
+                <h2 class="text-2xl font-bold mb-2 uppercase tracking-tighter">РАСЧЕТ ГОТОВ!</h2>
                 
                 <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-4 inline-block w-full max-w-sm">
-                    <div class="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Предварительный расчет:</div>
+                    <div class="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2">Предварительная смета:</div>
                     <div id="calc-result" class="text-4xl font-extrabold text-[#00f2fe] mb-1">0 ₽</div>
-                    <div class="text-[9px] text-white/30 uppercase tracking-[0.2em]">Мин. заказ от 5000 ₽</div>
+                    <div class="text-[9px] text-white/30 uppercase tracking-[0.2em]">Минимальный заказ от 5000 ₽</div>
                 </div>
 
                 <div class="max-w-sm mx-auto mb-8">
                     <p class="text-[10px] text-white/30 leading-relaxed uppercase tracking-wider">
-                        * Точный расчет только после бесплатного замера. <br>
+                        * Точный расчет только после бесплатного технического замера. <br>
                         Не является публичной офертой.
                     </p>
                 </div>
 
-                <p id="final-desc" class="text-white/50 mb-8 font-light text-sm">Пришлем смету в мессенджер MAX.</p>
+                <p id="final-desc" class="text-white/50 mb-8 font-light text-sm">Пришлем подробную смету в мессенджер MAX.</p>
                 
                 <div id="input-container" class="max-w-xs mx-auto space-y-4">
                     <input type="tel" id="user-phone" placeholder="+7 (___) ___-__-__" class="w-full p-4 rounded-xl text-center text-lg">
@@ -263,7 +273,7 @@
     </footer>
 
     <script>
-        let quizData = { type: '', area: 0, corners: 0, options: [], phone: '', total: 0 };
+        let quizData = { type: '', area: 0, corners: 0, lights: 0, options: [], phone: '', total: 0 };
         let captchaCorrect = 0;
 
         function generateCaptcha() {
@@ -284,20 +294,56 @@
 
         function calculateTotal() {
             const area = parseFloat(quizData.area) || 0;
-            let total = area * 950;
+            const lights = parseFloat(quizData.lights) || 0;
+            
+            // Расчет примерного периметра для услуг типа 'perimeter' (теневой, парящий)
+            const perimeter = Math.round(4.5 * Math.sqrt(area));
+            
+            // Базовая цена (полотно + монтаж)
+            let basePrice = quizData.type === 'Тканевый Premium' ? 1500 : 950;
+            let total = area * basePrice;
+            
+            // Добавляем освещение (точки света)
+            total += lights * 500;
+            
+            // Расчет каждой доп. услуги отдельно по ее параметрам
+            const selectedCheckboxes = document.querySelectorAll('#options-grid input[type="checkbox"]:checked');
+            selectedCheckboxes.forEach(cb => {
+                const price = parseFloat(cb.getAttribute('data-price'));
+                const type = cb.getAttribute('data-type');
+                
+                if (type === 'fixed') {
+                    // Фиксированная цена (за люстру, за слив и т.д.)
+                    total += price;
+                } else if (type === 'perimeter') {
+                    // Цена, зависящая от длины стен (теневой профиль, парящий)
+                    total += price * perimeter;
+                }
+            });
+
+            // Проверка минимального заказа
             if (total < 5000 && area > 0) total = 5000;
+            
             quizData.total = Math.round(total);
+            
+            // Вывод диапазона (вилки) +/- 5% для защиты исполнителя
+            const minPrice = Math.round(quizData.total * 0.95);
+            const maxPrice = Math.round(quizData.total * 1.05);
+            
             const resultEl = document.getElementById('calc-result');
-            if (resultEl) resultEl.innerText = quizData.total + ' ₽';
+            if (resultEl) {
+                resultEl.innerText = `${minPrice.toLocaleString()} — ${maxPrice.toLocaleString()} ₽`;
+            }
         }
 
         function validateAndNext(nextStepNum) {
             if (nextStepNum === 2 && !quizData.type) {
-                showMsg("Выберите тип потолка", true);
+                showMsg("Выберите тип полотна", true);
                 return;
             }
             if (nextStepNum === 3) {
                 const areaInput = document.getElementById('input-area');
+                const lightsInput = document.getElementById('input-lights');
                 if (!areaInput || !areaInput.value || areaInput.value <= 0) {
                     areaInput?.classList.add('error-border');
                     showMsg("Укажите площадь", true);
@@ -306,6 +352,7 @@
                 areaInput.classList.remove('error-border');
                 quizData.area = areaInput.value;
                 quizData.corners = document.getElementById('input-corners')?.value || 0;
+                quizData.lights = lightsInput?.value || 0;
             }
             nextStep(nextStepNum);
         }
@@ -326,7 +373,7 @@
             } else if (prog) prog.classList.add('hidden');
 
             if (step === 4) {
-                const checkboxes = document.querySelectorAll('#step-3 input[type="checkbox"]:checked');
+                const checkboxes = document.querySelectorAll('#options-grid input[type="checkbox"]:checked');
                 quizData.options = Array.from(checkboxes).map(cb => cb.value);
                 calculateTotal();
                 generateCaptcha();
@@ -346,10 +393,10 @@
             const btn = document.getElementById('submit-btn');
 
             if (!phone || phone.length < 10) {
-                showMsg("Некорректный номер телефона", true); return;
+                showMsg("Введите номер", true); return;
             }
             if (parseInt(captcha) !== captchaCorrect) {
-                showMsg("Ошибка капчи", true); generateCaptcha(); return;
+                showMsg("Неверный ответ", true); generateCaptcha(); return;
             }
 
             btn.disabled = true; btn.innerText = "ОТПРАВКА...";
@@ -360,8 +407,9 @@
 💎 Тип: ${quizData.type}
 📏 Площадь: ${quizData.area} м²
 📐 Углы: ${quizData.corners}
+💡 Точки света: ${quizData.lights} шт.
 ✨ Опции: ${quizData.options.join(', ') || 'Нет'}
-💰 Расчет: ${quizData.total} ₽
+💰 Смета: ${quizData.total} ₽ (±5%)
 -------------------------
 📱 Тел: ${phone}`;
 
@@ -379,13 +427,14 @@
                     document.getElementById('final-desc').innerText = "Заявка успешно принята. Наш специалист свяжется с вами в ближайшее время.";
                     showMsg("Успешно отправлено!");
                 } else {
-                    const errorDetail = result.error ? JSON.stringify(result.error) : 'Неизвестная ошибка';
-                    showMsg(`Ошибка ${response.status}: ${errorDetail}`, true);
+                    // ТЕПЕРЬ ТУТ БУДЕТ ВИДЕН ТЕКСТ ОШИБКИ ОТ MAX, А НЕ "НЕИЗВЕСТНАЯ ОШИБКА"
+                    const errorText = result.message || result.code || JSON.stringify(result);
+                    showMsg(`Ошибка ${response.status}: ${errorText}`, true);
                     btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
                 }
             } catch (e) {
                 btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
-                showMsg(`Ошибка сети: ${e.message}`, true);
+                showMsg("Ошибка сети (проверьте подключение)", true);
             }
         }
     </script>
