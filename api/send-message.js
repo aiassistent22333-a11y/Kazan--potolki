@@ -2,7 +2,7 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
-    // Используем подтвержденный ID. В API MAX для групп ID передается как число.
+    // Используем подтвержденный ID как число (integer), как требует документация MAX
     const MAX_CHAT_ID = -74685431444153; 
     const { text } = req.body;
 
@@ -11,7 +11,8 @@ export default async function handler(req, res) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Token': MAX_BOT_TOKEN 
+                // Именно этот формат потребовала поддержка: чистый токен в Authorization
+                'Authorization': MAX_BOT_TOKEN 
             },
             body: JSON.stringify({
                 chat_id: MAX_CHAT_ID,
@@ -21,13 +22,11 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        if (response.ok) {
-            return res.status(200).json({ success: true });
-        } else {
-            // Возвращаем ошибку от MAX (например, если еще висит 429)
-            return res.status(response.status).json(data);
-        }
+        // Пробрасываем статус и данные от MAX напрямую на фронтенд
+        return res.status(response.status).json(data);
+        
     } catch (error) {
-        return res.status(500).json({ success: false });
+        // Ошибка самого сервера Vercel (например, таймаут)
+        return res.status(500).json({ message: 'Vercel Server Error: ' + error.message });
     }
 }
