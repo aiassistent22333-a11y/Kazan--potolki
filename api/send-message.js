@@ -1,10 +1,10 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
-    // ТОКЕН (Остается неизменным)
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
     
-    // ВНИМАНИЕ: Сюда впишите ID вашей НОВОЙ ГРУППЫ без кавычек
+    // МЫ ПРОБУЕМ ОЧИСТИТЬ ID: в некоторых API префикс -74... лишний
+    // Если -74735565042361 не сработает, попробуем передать его как 74735565042361
     const MAX_CHAT_ID = -74735565042361; 
     
     const { text } = req.body;
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
                 'Authorization': MAX_BOT_TOKEN
             },
             body: JSON.stringify({
-                chat_id: MAX_CHAT_ID,
+                chat_id: MAX_CHAT_ID, // Передаем как число (без кавычек)
                 text: text
             })
         });
@@ -30,6 +30,8 @@ export default async function handler(req, res) {
             data = { message: responseText };
         }
 
+        // Если это все еще "Unknown recipient", значит сервер MAX требует ID без минуса
+        // или в другом поле. Но сначала пробуем этот чистый вариант.
         return res.status(response.status).json(data);
         
     } catch (error) {
