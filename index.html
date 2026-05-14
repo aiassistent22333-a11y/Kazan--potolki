@@ -296,37 +296,30 @@
             const area = parseFloat(quizData.area) || 0;
             const lights = parseFloat(quizData.lights) || 0;
             
-            // Расчет примерного периметра для услуг типа 'perimeter' (теневой, парящий)
+            // Расчет расчетного периметра по формуле 4.5 * sqrt(S)
             const perimeter = Math.round(4.5 * Math.sqrt(area));
             
             // Базовая цена (полотно + монтаж)
             let basePrice = quizData.type === 'Тканевый Premium' ? 1500 : 950;
             let total = area * basePrice;
             
-            // Добавляем освещение (точки света)
+            // Добавляем освещение (базовая цена за монтаж точки)
             total += lights * 500;
             
-            // Расчет каждой доп. услуги отдельно по ее параметрам
+            // Расчет доп. услуг по матрице (тип fixed или perimeter)
             const selectedCheckboxes = document.querySelectorAll('#options-grid input[type="checkbox"]:checked');
             selectedCheckboxes.forEach(cb => {
-                const price = parseFloat(cb.getAttribute('data-price'));
+                const price = parseFloat(cb.getAttribute('data-price')) || 0;
                 const type = cb.getAttribute('data-type');
-                
-                if (type === 'fixed') {
-                    // Фиксированная цена (за люстру, за слив и т.д.)
-                    total += price;
-                } else if (type === 'perimeter') {
-                    // Цена, зависящая от длины стен (теневой профиль, парящий)
-                    total += price * perimeter;
-                }
+                if (type === 'fixed') total += price;
+                else if (type === 'perimeter') total += price * perimeter;
             });
 
-            // Проверка минимального заказа
+            // Проверка на минимальный заказ
             if (total < 5000 && area > 0) total = 5000;
-            
             quizData.total = Math.round(total);
             
-            // Вывод диапазона (вилки) +/- 5% для защиты исполнителя
+            // Расчет и вывод вилки цен +/- 5%
             const minPrice = Math.round(quizData.total * 0.95);
             const maxPrice = Math.round(quizData.total * 1.05);
             
@@ -343,7 +336,6 @@
             }
             if (nextStepNum === 3) {
                 const areaInput = document.getElementById('input-area');
-                const lightsInput = document.getElementById('input-lights');
                 if (!areaInput || !areaInput.value || areaInput.value <= 0) {
                     areaInput?.classList.add('error-border');
                     showMsg("Укажите площадь", true);
@@ -352,24 +344,33 @@
                 areaInput.classList.remove('error-border');
                 quizData.area = areaInput.value;
                 quizData.corners = document.getElementById('input-corners')?.value || 0;
-                quizData.lights = lightsInput?.value || 0;
+                quizData.lights = document.getElementById('input-lights')?.value || 0;
             }
             nextStep(nextStepNum);
         }
 
         function nextStep(step) {
             showMsg("");
-            document.querySelectorAll('[id^="step-"]').forEach(el => el.classList.replace('block', 'hidden'));
+            document.querySelectorAll('[id^="step-"]').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
             const target = document.getElementById(`step-${step}`);
-            if (target) target.classList.replace('hidden', 'block');
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
 
             const prog = document.getElementById('progress-container');
             if (step > 0 && step < 4) {
                 if (prog) prog.classList.remove('hidden');
                 const percent = Math.round((step / 3) * 100);
-                document.getElementById('current-step-num').innerText = step;
-                document.getElementById('progress-percent').innerText = percent + '%';
-                document.getElementById('progress-fill').style.width = percent + '%';
+                const stepNumEl = document.getElementById('current-step-num');
+                const percentEl = document.getElementById('progress-percent');
+                const fillEl = document.getElementById('progress-fill');
+                if (stepNumEl) stepNumEl.innerText = step;
+                if (percentEl) percentEl.innerText = percent + '%';
+                if (fillEl) fillEl.style.width = percent + '%';
             } else if (prog) prog.classList.add('hidden');
 
             if (step === 4) {
@@ -401,8 +402,7 @@
 
             btn.disabled = true; btn.innerText = "ОТПРАВКА...";
 
-            const message = `
-🚀 НОВЫЙ ЛИД: КАЗАНСКИЕ ПОТОЛКИ
+            const message = `🚀 НОВЫЙ ЛИД: КАЗАНСКИЕ ПОТОЛКИ
 -------------------------
 💎 Тип: ${quizData.type}
 📏 Площадь: ${quizData.area} м²
@@ -420,16 +420,14 @@
                     body: JSON.stringify({ text: message })
                 });
 
-                const result = await response.json();
-
                 if (response.ok) {
                     document.getElementById('input-container').classList.add('hidden');
-                    document.getElementById('final-desc').innerText = "Заявка успешно принята. Наш специалист свяжется с вами в ближайшее время.";
+                    const finalDesc = document.getElementById('final-desc');
+                    if (finalDesc) finalDesc.innerText = "Заявка успешно принята. Мы свяжемся с вами в ближайшее время.";
                     showMsg("Успешно отправлено!");
                 } else {
-                    // ТЕПЕРЬ ТУТ БУДЕТ ВИДЕН ТЕКСТ ОШИБКИ ОТ MAX, А НЕ "НЕИЗВЕСТНАЯ ОШИБКА"
-                    const errorText = result.message || result.code || JSON.stringify(result);
-                    showMsg(`Ошибка ${response.status}: ${errorText}`, true);
+                    const result = await response.json();
+                    showMsg(`Ошибка ${response.status}: ${result.message || 'Ошибка API'}`, true);
                     btn.disabled = false; btn.innerText = "ПОВТОРИТЬ";
                 }
             } catch (e) {
