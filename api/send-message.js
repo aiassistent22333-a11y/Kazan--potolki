@@ -3,9 +3,9 @@ export default async function handler(req, res) {
 
     const MAX_BOT_TOKEN = 'f9LHodD0cOL9_5xlu4YqA_EkNyyXrr1Y6C0oFH7iQMGH5gEHCgpavctDLEzn32HPisUK5WPXkG7aCWqI5MvH';
     
-    // Передаем как ЧИСЛО (без кавычек) и с МИНУСОМ. 
-    // Это единственный формат, который соответствует ответу метода /chats.
-    const MAX_CHAT_ID = -74685431444153; 
+    // МЕНЯЕМ НА ПОЛОЖИТЕЛЬНОЕ ЧИСЛО (без минуса и без кавычек).
+    // Это стандартное требование для многих API, где минус — это просто флаг интерфейса.
+    const MAX_CHAT_ID = 74685431444153; 
     const { text } = req.body;
 
     try {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        // Возвращаем результат обратно на фронтенд
+        // Возвращаем результат обратно на фронтенд для диагностики
         return res.status(response.status).json(data);
         
     } catch (error) {
