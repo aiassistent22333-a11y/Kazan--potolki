@@ -7,6 +7,7 @@ export default async function handler(req, res) {
     const { text } = req.body;
 
     try {
+        // Мы используем чистый формат JSON, так как бот - администратор
         const payload = {
             chat_id: MAX_CHAT_ID,
             text: text
